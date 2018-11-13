@@ -69,7 +69,7 @@ Examples:
 Packaging for 'email notification' plugin 
 ******************************************
 
-This repo contains the scripts used to create a foglamp-notif-email Debian package.
+This repo contains the scripts used to create a foglamp-notify-email Debian package.
 
 The make_deb script
 ===================
@@ -97,15 +97,15 @@ Finally, run the ``make_deb`` command:
 .. code-block:: console
 
    $ ./make_deb
-   The package root directory is   : /home/ubuntu/source/foglamp-notif-email
+   The package root directory is   : /home/ubuntu/source/foglamp-notify-email
    The FogLAMP required version    : >=1.4
-   The package will be built in    : /home/ubuntu/source/foglamp-notif-email/packages/build
+   The package will be built in    : /home/ubuntu/source/foglamp-notify-email/packages/build
    The architecture is set as      : x86_64
-   The package name is             : foglamp-notif-email-1.0.0-x86_64
+   The package name is             : foglamp-notify-email-1.0.0-x86_64
 
    Populating the package and updating version file...Done.
    Building the new package...
-   dpkg-deb: building package 'foglamp-notif-email' in 'foglamp-notif-email-1.0.0-x86_64.deb'.
+   dpkg-deb: building package 'foglamp-notify-email' in 'foglamp-notify-email-1.0.0-x86_64.deb'.
    Building Complete.
    $
 

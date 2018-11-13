@@ -27,7 +27,7 @@
 
 set -e
 
-PKG_NAME="foglamp-notif-email"
+PKG_NAME="foglamp-notify-email"
 
 get_foglamp_script () {
     foglamp_script=$(dpkg -L foglamp | grep 'foglamp/bin/foglamp$')

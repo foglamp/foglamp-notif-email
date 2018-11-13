@@ -1,4 +1,4 @@
-Package: foglamp-notif-email
+Package: foglamp-notify-email
 Version: 1.0.0
 Section: devel
 Priority: optional
