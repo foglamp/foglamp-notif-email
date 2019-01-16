@@ -16,7 +16,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-O0 -ggdb")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
 
 # Set plugin type (south, north, filter)
-set(PLUGIN_TYPE "notify")
+set(PLUGIN_TYPE "notificationDelivery")
 
 # Add here all needed FogLAMP libraries as list
 set(NEEDED_FOGLAMP_LIBS common-lib filters-common-lib services-common-lib)
