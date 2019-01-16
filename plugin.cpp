@@ -189,13 +189,19 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config,
 }
 
 /**
- * Ingest a set of readings into the plugin for processing
+ * Deliver received notification data
  *
- * @param handle	The plugin handle returned from plugin_init
- * @param readingSet	The readings to process
+ * @param handle		The plugin handle returned from plugin_init
+ * @param deliveryName		The delivery category name
+ * @param notificationName	The notification name
+ * @param triggerReason		The trigger reason for notification
+ * @param message		The message from notification
  */
-void plugin_deliver(PLUGIN_HANDLE *handle,
-		   std::string message)
+bool plugin_deliver(PLUGIN_HANDLE handle,
+                    const std::string& deliveryName,
+                    const std::string& notificationName,
+                    const std::string& triggerReason,
+                    const std::string& message)
 {
 	Logger::getLogger()->info("Email notification plugin: plugin_deliver()");
 	PLUGIN_INFO *info = (PLUGIN_INFO *) handle;
@@ -204,7 +210,7 @@ void plugin_deliver(PLUGIN_HANDLE *handle,
 	if (!filter->isEnabled())
 	{
 		// Current plugin is not active: nothing to do
-		return;
+		return false;
 	}
 	
 	int rv = sendEmailMsg(&info->emailCfg, message.c_str());
