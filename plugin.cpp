@@ -13,6 +13,7 @@
 #include <config_category.h>
 #include <filter.h>
 #include <email_config.h>
+#include <version.h>
 
 #define EMAIL_CFG "\"email_from\":\"alerts@dianomic.com\",\"email_from_name\":\"Notification alert\",\"email_to\":\"alerts@dianomic.com\",\"email_to_name\":\"Notification alert subscriber\",\"server\":\"smtp.gmail.com\",\"port\":587,\"subject\":\"Foglamp alert notification\",\"messageId\":\"dcd7cb36-11db-487a-9f3a-e652a9458efd@dianomic.com\",\"use_ssl_tls\":true,\"username\":\"user\",\"password\":\"pass\""
 
@@ -41,7 +42,7 @@ extern "C" {
  */
 static PLUGIN_INFORMATION info = {
         PLUGIN_NAME,              // Name
-        "1.0.0",                  // Version
+        VERSION,                  // Version
         0,                        // Flags
         PLUGIN_TYPE_NOTIFICATION_DELIVERY,       // Type
         "1.0.0",                  // Interface version
