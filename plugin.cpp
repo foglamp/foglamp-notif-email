@@ -90,47 +90,47 @@ void parseConfig(Document *document, EmailCfg *emailCfg)
 {
 	for (Value::ConstMemberIterator itr = document->MemberBegin(); itr != document->MemberEnd(); ++itr)
 	{
-		if (itr->name.GetString() == "email_from" && itr->value.IsString())
+		if (strcmp(itr->name.GetString(), "email_from") == 0 && itr->value.IsString())
 		{
 			emailCfg->email_from = itr->value.GetString();
 		}
-		else if (itr->name.GetString() == "email_from_name" && itr->value.IsString())
+		else if (strcmp(itr->name.GetString(), "email_from_name") == 0 && itr->value.IsString())
 		{
 			emailCfg->email_from_name= itr->value.GetString();
 		}
-		else if (itr->name.GetString() == "email_to" && itr->value.IsString())
+		else if (strcmp(itr->name.GetString(), "email_to") == 0 && itr->value.IsString())
 		{
 			emailCfg->email_to = itr->value.GetString();
 		}
-		else if (itr->name.GetString() == "email_to_name" && itr->value.IsString())
+		else if (strcmp(itr->name.GetString(), "email_to_name") == 0 && itr->value.IsString())
 		{
 			emailCfg->email_to_name = itr->value.GetString();
 		}
-		else if (itr->name.GetString() == "server" && itr->value.IsString())
+		else if (strcmp(itr->name.GetString(), "server") == 0 && itr->value.IsString())
 		{
 			emailCfg->server = itr->value.GetString();
 		}
-		else if (itr->name.GetString() == "port" && itr->value.IsNumber())
+		else if (strcmp(itr->name.GetString(), "port") == 0 && itr->value.IsNumber())
 		{
 			emailCfg->port = (unsigned int) itr->value.GetInt();
 		}
-		else if (itr->name.GetString() == "subject" && itr->value.IsString())
+		else if (strcmp(itr->name.GetString(), "subject") == 0 && itr->value.IsString())
 		{
 			emailCfg->subject = itr->value.GetString();
 		}
-		else if (itr->name.GetString() == "messageId" && itr->value.IsString())
+		else if (strcmp(itr->name.GetString(), "messageId") == 0 && itr->value.IsString())
 		{
 			emailCfg->messageId = itr->value.GetString();
 		}
-		else if (itr->name.GetString() == "use_ssl_tls" && itr->value.IsBool())
+		else if (strcmp(itr->name.GetString(), "use_ssl_tls") == 0 && itr->value.IsBool())
 		{
 			emailCfg->use_ssl_tls = itr->value.IsTrue();
 		}
-		else if (itr->name.GetString() == "username" && itr->value.IsString())
+		else if (strcmp(itr->name.GetString(), "username") == 0 && itr->value.IsString())
 		{
 			emailCfg->username = itr->value.GetString();
 		}
-		else if (itr->name.GetString() == "password" && itr->value.IsString())
+		else if (strcmp(itr->name.GetString(), "password") == 0 && itr->value.IsString())
 		{
 			emailCfg->password = itr->value.GetString();
 		}
@@ -149,8 +149,8 @@ void parseConfig(Document *document, EmailCfg *emailCfg)
  * @return		An opaque handle that is used in all subsequent calls to the plugin
  */
 PLUGIN_HANDLE plugin_init(ConfigCategory* config,
-								OUTPUT_HANDLE *outHandle,
-								OUTPUT_STREAM output)
+			OUTPUT_HANDLE *outHandle,
+			OUTPUT_STREAM output)
 {
 	PLUGIN_INFO *info = new PLUGIN_INFO;
 	info->handle = new FogLampFilter(PLUGIN_NAME, *config, outHandle, output);
