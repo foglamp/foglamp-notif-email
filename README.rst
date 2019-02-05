@@ -4,6 +4,15 @@ FogLAMP "email notification" plugin
 
 Email notification plugin
 
+Note:
+
+This plugin requires the installation of libcurl-dev apt package and that
+is a virtual package provided by 'libcurl4-openssl-dev' among other options.
+
+.. code-block:: console
+
+  $ sudo apt-get install libcurl4-openssl-dev
+
 Build
 -----
 To build FogLAMP "email notification" C++ plugin:
