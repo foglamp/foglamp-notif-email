@@ -11,29 +11,31 @@
 #include <string>
 #include <plugin_api.h>
 #include <config_category.h>
-#include <filter.h>
+#include <logger.h>
 #include <email_config.h>
-#include <delivery_plugin.h>
 #include <version.h>
 
 #define EMAIL_CFG "\"email_from\":\"dianomic.alerts@gmail.com\",\"email_from_name\":\"Notification alert\",\"email_to\":\"aman@dianomic.com\"," \
 "\"email_to_name\":\"Notification alert subscriber\",\"server\":\"smtp.gmail.com\",\"port\":587,\"subject\":\"Foglamp alert notification\"," \
-"\"use_ssl_tls\":true,\"username\":\"dianomic.alerts@gmail.com\",\"password\":\"Nerd@1234\""
+"\"use_ssl_tls\":true,\"username\":\"dianomic.alerts@gmail.com\",\"password\":\"pass\""
 
 #define PLUGIN_NAME "email"
 
 #define DEFAULT_CONFIG "{\"plugin\" : { \"description\" : \"Email notification plugin\", " \
                        		"\"type\" : \"string\", " \
-				"\"default\" : \"" PLUGIN_NAME "\" }, " \
+				"\"default\" : \"" PLUGIN_NAME "\" }, \"readonly\" : \"true\" }, " \
 			 "\"enable\": {\"description\": \"A switch that can be used to enable or disable execution of " \
 					 "the email notification plugin.\", " \
 				"\"type\": \"boolean\", " \
+				"\"displayName\" : \"Enabled\", " \
 				"\"default\": \"false\" }, " \
-			"\"config\" : {\"description\" : \"Email notification plugin configuration.\", " \
+			"\"emailCfg\" : {\"description\" : \"Email server & account config\", " \
 				"\"type\" : \"JSON\", " \
-				"\"default\" : {" EMAIL_CFG "}} }"
+				"\"default\" : {" EMAIL_CFG "}\", "\
+				"\"order\" : \"1\", \"displayName\" : \"Email server & account config\"} }"
 
 using namespace std;
+using namespace rapidjson;
 
 /**
  * The Notification plugin interface
@@ -84,6 +86,9 @@ void resetConfig(EmailCfg *emailCfg)
 	emailCfg->password = "";
 }
 
+/**
+ * Print EmailCfg structure
+ */
 void printConfig(EmailCfg *emailCfg)
 {
 	Logger::getLogger()->info("email_from=%s, email_from_name=%s, email_to=%s, email_to_name=%s",
@@ -95,7 +100,7 @@ void printConfig(EmailCfg *emailCfg)
 }
 
 /**
- * Fill EmailCfg structure from JSON document representing plugin config
+ * Fill EmailCfg structure from JSON document representing email server/account config
  */
 void parseConfig(Document *document, EmailCfg *emailCfg)
 {
@@ -103,7 +108,7 @@ void parseConfig(Document *document, EmailCfg *emailCfg)
 	{
 		if (strcmp(itr->name.GetString(), "email_from") == 0 && itr->value.IsString())
 		{
-			emailCfg->email_from = "dianomic.alerts@gmail.com"; //itr->value.GetString();
+			emailCfg->email_from = itr->value.GetString();
 		}
 		else if (strcmp(itr->name.GetString(), "email_from_name") == 0 && itr->value.IsString())
 		{
@@ -111,7 +116,7 @@ void parseConfig(Document *document, EmailCfg *emailCfg)
 		}
 		else if (strcmp(itr->name.GetString(), "email_to") == 0 && itr->value.IsString())
 		{
-			emailCfg->email_to = "aman@dianomic.com"; //itr->value.GetString();
+			emailCfg->email_to = itr->value.GetString();
 		}
 		else if (strcmp(itr->name.GetString(), "email_to_name") == 0 && itr->value.IsString())
 		{
@@ -135,11 +140,11 @@ void parseConfig(Document *document, EmailCfg *emailCfg)
 		}
 		else if (strcmp(itr->name.GetString(), "username") == 0 && itr->value.IsString())
 		{
-			emailCfg->username = "dianomic.alerts@gmail.com"; //itr->value.GetString();
+			emailCfg->username = itr->value.GetString();
 		}
 		else if (strcmp(itr->name.GetString(), "password") == 0 && itr->value.IsString())
 		{
-			emailCfg->password = "Nerd@1234"; //itr->value.GetString();
+			emailCfg->password = itr->value.GetString();
 		}
 		else
 		{
@@ -155,9 +160,7 @@ void parseConfig(Document *document, EmailCfg *emailCfg)
  * @param config	The configuration category for the plugin
  * @return		An opaque handle that is used in all subsequent calls to the plugin
  */
-PLUGIN_HANDLE plugin_init(ConfigCategory* config,
-			OUTPUT_HANDLE *outHandle,
-			OUTPUT_STREAM output)
+PLUGIN_HANDLE plugin_init(ConfigCategory* config)
 {
 	PLUGIN_INFO *info = new PLUGIN_INFO;
 	
@@ -165,21 +168,20 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config,
 	if (config)
 	{
 		Document	document;
-		if (document.Parse(config->getValue("config").c_str()).HasParseError())
+		if (document.Parse(config->getValue("emailCfg").c_str()).HasParseError())
 		{
-			Logger::getLogger()->error("Unable to parse email plugin config: '%s'", config->getValue("config").c_str());
+			Logger::getLogger()->error("Unable to parse email plugin config: '%s'", config->getValue("emailCfg").c_str());
 			return NULL;
 		}
 		Logger::getLogger()->info("Email plugin config=%s", config->toJSON().c_str());
 
 		resetConfig(&info->emailCfg);
 		parseConfig(&document, &info->emailCfg);
-		printConfig(&info->emailCfg);
+		//printConfig(&info->emailCfg);
 		
 		if (info->emailCfg.email_to == "" || info->emailCfg.server == "" || info->emailCfg.port == 0)
 		{
 			Logger::getLogger()->error("Config for email notification plugin is incomplete, exiting...");
-			//delete info->handle;
 			delete info;
 			info = NULL;
 		}
@@ -187,15 +189,12 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config,
 	else
 	{
 		Logger::getLogger()->info("No config provided for email plugin, exiting...");
-		//delete info->handle;
 		delete info;
 		info = NULL;
 	}
 	
 	return (PLUGIN_HANDLE)info;
 }
-
-extern int sendEmailMsg(const EmailCfg *emailCfg, const char *msg);
 
 /**
  * Deliver received notification data
@@ -215,9 +214,7 @@ bool plugin_deliver(PLUGIN_HANDLE handle,
 	Logger::getLogger()->info("Email notification plugin_deliver(): deliveryName=%s, notificationName=%s, triggerReason=%s, message=%s",
 							deliveryName.c_str(), notificationName.c_str(), triggerReason.c_str(), message.c_str());
 	PLUGIN_INFO *info = (PLUGIN_INFO *) handle;
-	printConfig(&info->emailCfg);
 	
-	PRINT_FUNC;
 	int rv = sendEmailMsg(&info->emailCfg, message.c_str());
 	if (rv)
 		Logger::getLogger()->info("sendEmailMsg() returned %d", rv);
@@ -230,7 +227,6 @@ bool plugin_deliver(PLUGIN_HANDLE handle,
  */
 void plugin_reconfigure(PLUGIN_HANDLE *handle, string& newConfig)
 {
-	PRINT_FUNC;
 	Logger::getLogger()->info("Email notification plugin: plugin_reconfigure()");
 	PLUGIN_INFO *info = (PLUGIN_INFO *) handle;
 	
@@ -247,7 +243,8 @@ void plugin_reconfigure(PLUGIN_HANDLE *handle, string& newConfig)
 	if (info->emailCfg.email_to == "" || info->emailCfg.server == "" || info->emailCfg.port == 0)
 	{
 		Logger::getLogger()->error("New config for email notification plugin is incomplete");
-		// TODO: not sure how to indicate failure to caller
+		// How to indicate failure to caller?
+		// Maybe keep a copy of previous emailCfg structure and restore it here in case of failure
 	}
 	
 	return;
@@ -258,7 +255,6 @@ void plugin_reconfigure(PLUGIN_HANDLE *handle, string& newConfig)
  */
 void plugin_shutdown(PLUGIN_HANDLE *handle)
 {
-	PRINT_FUNC;
 	PLUGIN_INFO *info = (PLUGIN_INFO *) handle;
 	delete info;
 }

@@ -1,8 +1,27 @@
-====================================
-FogLAMP "email notification" plugin
-====================================
+==========================================
+FogLAMP email notification delivery plugin
+==========================================
 
-Email notification plugin
+Email notification delivery plugin
+
+Example value for plugin 'emailCfg' param:
+
+        {
+        "value": {
+		"email_from": "dianomic.alerts@gmail.com",
+		"email_from_name": "Notification alerts",
+		"email_to": "alert.subscriber@dianomic.com",
+		"email_to_name": "Notification alert subscriber",
+		"server": "smtp.gmail.com",
+		"port": 587,
+		"subject": "Foglamp alert notification",
+		"use_ssl_tls": true,
+		"username": "dianomic.alerts@gmail.com",
+		"password": "password"
+                }
+        }
+
+Above example is when one wants to use Gmail SMTP server to send out alert emails. Also for Gmail, one needs to enable IMAP in Gmail account Settings->"Forwarding and POP/IMAP"->"Enable IMAP". Also in google account settings at https://myaccount.google.com/lesssecureapps, enable "Allow less secure apps".
 
 Note:
 

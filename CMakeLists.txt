@@ -59,14 +59,12 @@ include_directories(${FOGLAMP_INCLUDE_DIRS})
 if (FOGLAMP_SRC)
 	message(STATUS "Using third-party includes " ${FOGLAMP_SRC}/C/thirdparty/Simple-Web-Server)
 	include_directories(${FOGLAMP_SRC}/C/thirdparty/Simple-Web-Server)
-	include_directories(${FOGLAMP_SRC}/foglamp-service-notification/C/services/common/include)
 else()
 	include_directories(${FOGLAMP_INCLUDE_DIRS}/Simple-Web-Server)
 endif()
 
 # Add FogLAMP lib path
 link_directories(${FOGLAMP_LIB_DIRS})
-link_directories(${FOGLAMP_SRC}/cmake_build/C/lib)
 
 # Create shared library
 add_library(${PROJECT_NAME} SHARED ${SOURCES} version.h)
