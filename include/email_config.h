@@ -18,7 +18,6 @@ struct EmailCfg {
 	std::string server;
 	unsigned int port;
 	std::string subject;
-	std::string messageId; // e.g. dcd7cb36-11db-487a-9f3a-e652a9458efd@rfcpedant.example.org // unused presently
 	bool use_ssl_tls;
 	std::string username; // required only in case of SSL/TLS
 	std::string password; // required only in case of SSL/TLS

@@ -26,9 +26,12 @@
 #include <ctime>
 #include <curl/curl.h>
 #include <email_config.h>
+#include <logger.h>
 
 using namespace std;
 
+extern "C" {
+	
 struct upload_status {
   int lines_read;
   vector<std::string>* payload;
@@ -130,7 +133,7 @@ int sendEmailMsg(const EmailCfg *emailCfg, const char *msg)
     curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
     curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 
-	//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+    //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
     /* Send the message */
     res = curl_easy_perform(curl);
@@ -149,4 +152,5 @@ int sendEmailMsg(const EmailCfg *emailCfg, const char *msg)
   delete upload_ctx.payload;
   return (int)res;
 }
+};
 
