@@ -23,7 +23,7 @@
 
 #define DEFAULT_CONFIG "{\"plugin\" : { \"description\" : \"Email notification plugin\", " \
                        		"\"type\" : \"string\", " \
-				"\"default\" : \"" PLUGIN_NAME "\" }, \"readonly\" : \"true\" }, " \
+				"\"default\" : \"" PLUGIN_NAME "\", \"readonly\" : \"true\" }, " \
 			 "\"enable\": {\"description\": \"A switch that can be used to enable or disable execution of " \
 					 "the email notification plugin.\", " \
 				"\"type\": \"boolean\", " \
@@ -31,7 +31,7 @@
 				"\"default\": \"false\" }, " \
 			"\"emailCfg\" : {\"description\" : \"Email server & account config\", " \
 				"\"type\" : \"JSON\", " \
-				"\"default\" : {" EMAIL_CFG "}\", "\
+				"\"default\" : {" EMAIL_CFG " }, " \
 				"\"order\" : \"1\", \"displayName\" : \"Email server & account config\"} }"
 
 using namespace std;
