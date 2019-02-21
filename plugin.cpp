@@ -15,9 +15,9 @@
 #include <email_config.h>
 #include <version.h>
 
-#define EMAIL_CFG "\\\"email_from\\\":\\\"dianomic.alerts@gmail.com\\\",\\\"email_from_name\\\":\\\"Notification alert\\\",\\\"email_to\\\":\\\"alert.subscriber@dianomic.com\\\"," \
-"\\\"email_to_name\\\":\\\"Notification alert subscriber\\\",\\\"server\\\":\\\"smtp.gmail.com\\\",\\\"port\\\":587,\\\"subject\\\":\\\"Foglamp alert notification\\\"," \
-"\\\"use_ssl_tls\\\":true,\\\"username\\\":\\\"dianomic.alerts@gmail.com\\\",\\\"password\\\":\\\"pass\\\""
+#define EMAIL_CFG "\"email_from\":\"dianomic.alerts@gmail.com\",\"email_from_name\":\"Notification alert\",\"email_to\":\"alert.subscriber@dianomic.com\"," \
+"\"email_to_name\":\"Notification alert subscriber\",\"server\":\"smtp.gmail.com\",\"port\":587,\"subject\":\"Foglamp alert notification\"," \
+"\"use_ssl_tls\":true,\"username\":\"dianomic.alerts@gmail.com\",\"password\":\"pass\""
 
 #define PLUGIN_NAME "email"
 
@@ -31,7 +31,7 @@
 				"\"default\": \"false\" }, " \
 			"\"emailCfg\" : {\"description\" : \"Email server & account config\", " \
 				"\"type\" : \"JSON\", " \
-				"\"default\" : \" {" EMAIL_CFG " }\", " \
+				"\"default\" : {" EMAIL_CFG " }, " \
 				"\"order\" : \"1\", \"displayName\" : \"Email server & account config\"} }"
 
 using namespace std;
