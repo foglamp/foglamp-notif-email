@@ -28,7 +28,7 @@
 set -e
 
 set_files_ownership () {
-    chown -R root:root /usr/local/foglamp/plugins/notif/email
+    chown -R root:root /usr/local/foglamp/plugins/notificationDelivery/email
 }
 
 set_files_ownership
