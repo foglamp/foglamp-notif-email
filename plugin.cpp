@@ -15,9 +15,10 @@
 #include <email_config.h>
 #include <version.h>
 
-#define EMAIL_CFG "\"email_from\":\"dianomic.alerts@gmail.com\",\"email_from_name\":\"Notification alert\",\"email_to\":\"alert.subscriber@dianomic.com\"," \
-"\"email_to_name\":\"Notification alert subscriber\",\"server\":\"smtp.gmail.com\",\"port\":587,\"subject\":\"Foglamp alert notification\"," \
-"\"use_ssl_tls\":true,\"username\":\"dianomic.alerts@gmail.com\",\"password\":\"pass\""
+#define xstr(s) str(s)
+#define str(s) #s
+
+#define EMAIL_CFG "{\"email_from\":\"dianomic.alerts@gmail.com\",\"email_from_name\":\"Notification alert\",\"email_to\":\"alert.subscriber@dianomic.com\",\"email_to_name\":\"Notification alert subscriber\",\"server\":\"smtp.gmail.com\",\"port\":587,\"subject\":\"Foglamp alert notification\",\"use_ssl_tls\":true,\"username\":\"dianomic.alerts@gmail.com\",\"password\":\"pass\"}"
 
 #define PLUGIN_NAME "email"
 
@@ -28,10 +29,10 @@
 					 "the email notification plugin.\", " \
 				"\"type\": \"boolean\", " \
 				"\"displayName\" : \"Enabled\", " \
-				"\"default\": \"false\" }, " \
+				"\"default\": \"false\", \"order\" : \"2\" }, " \
 			"\"emailCfg\" : {\"description\" : \"Email server & account config\", " \
 				"\"type\" : \"JSON\", " \
-				"\"default\" : {" EMAIL_CFG " }, " \
+				"\"default\" : " xstr(EMAIL_CFG) ", " \
 				"\"order\" : \"1\", \"displayName\" : \"Email server & account config\"} }"
 
 using namespace std;
