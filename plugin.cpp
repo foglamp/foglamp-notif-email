@@ -15,25 +15,44 @@
 #include <email_config.h>
 #include <version.h>
 
-#define xstr(s) str(s)
-#define str(s) #s
+#define TO_STRING(...) DEFER(TO_STRING_)(__VA_ARGS__)
+#define DEFER(x) x
+#define TO_STRING_(...) #__VA_ARGS__
+#define QUOTE(...) TO_STRING(__VA_ARGS__)
 
-#define EMAIL_CFG "{\"email_from\":\"dianomic.alerts@gmail.com\",\"email_from_name\":\"Notification alert\",\"email_to\":\"alert.subscriber@dianomic.com\",\"email_to_name\":\"Notification alert subscriber\",\"server\":\"smtp.gmail.com\",\"port\":587,\"subject\":\"Foglamp alert notification\",\"use_ssl_tls\":true,\"username\":\"dianomic.alerts@gmail.com\",\"password\":\"pass\"}"
+#define EMAIL_CFG TO_STRING({ \
+	"email_from" : "dianomic.alerts@gmail.com", \
+	"email_from_name" : "Notification alert", \
+	"email_to" : "alert.subscriber@dianomic.com", \
+	"email_to_name" : "Notification alert subscriber", \
+	"server" : "smtp.gmail.com", \
+	"port" : 587, \
+	"subject" : "Foglamp alert notification", \
+	"use_ssl_tls" : true, \
+	"username" : "dianomic.alerts@gmail.com", \
+	"password" : "pass" \
+})
 
 #define PLUGIN_NAME "email"
 
-#define DEFAULT_CONFIG "{\"plugin\" : { \"description\" : \"Email notification plugin\", " \
-                       		"\"type\" : \"string\", " \
-				"\"default\" : \"" PLUGIN_NAME "\", \"readonly\" : \"true\" }, " \
-			 "\"enable\": {\"description\": \"A switch that can be used to enable or disable execution of " \
-					 "the email notification plugin.\", " \
-				"\"type\": \"boolean\", " \
-				"\"displayName\" : \"Enabled\", " \
-				"\"default\": \"false\", \"order\" : \"2\" }, " \
-			"\"emailCfg\" : {\"description\" : \"Email server & account config\", " \
-				"\"type\" : \"JSON\", " \
-				"\"default\" : " xstr(EMAIL_CFG) ", " \
-				"\"order\" : \"1\", \"displayName\" : \"Email server & account config\"} }"
+const char * def_cfg = QUOTE({
+	"plugin" : { 
+		"description" : "Email notification plugin",
+		"type" : "string",
+		"default" : PLUGIN_NAME,
+		"readonly" : "true" },
+	"enable": {
+		"description": "A switch that can be used to enable or disable execution of the email notification plugin.",
+		"type": "boolean",
+		"displayName" : "Enabled",
+		"default": "false", 
+		"order" : "2" },
+	"emailCfg" : {"description" : "Email server & account config",
+		"type" : "JSON",
+		"default" : EMAIL_CFG,
+		"order" : "1",
+		"displayName" : "Email server & account config"} 
+	});
 
 using namespace std;
 using namespace rapidjson;
@@ -52,7 +71,7 @@ static PLUGIN_INFORMATION info = {
         0,                        // Flags
         PLUGIN_TYPE_NOTIFICATION_DELIVERY,       // Type
         "1.0.0",                  // Interface version
-        DEFAULT_CONFIG	          // Default plugin configuration
+        def_cfg	          // Default plugin configuration
 };
 
 typedef struct
