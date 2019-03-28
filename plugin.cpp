@@ -86,11 +86,6 @@ extern int sendEmailMsg(const EmailCfg *emailCfg, const char *msg);
  */
 PLUGIN_INFORMATION *plugin_info()
 {
-	Logger::getLogger()->setMinLevel("debug");
-	Logger::getLogger()->info("EMAIL_CFG=%s", EMAIL_CFG);
-	//Logger::getLogger()->info("TO_STRING(EMAIL_CFG)=%s", TO_STRING(EMAIL_CFG));
-	Logger::getLogger()->info("RULE_DEFAULT_CONFIG=%s", def_cfg);
-	Logger::getLogger()->setMinLevel("warning");
 	return &info;
 }
 
@@ -202,7 +197,7 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config)
 
 		resetConfig(&info->emailCfg);
 		parseConfig(&document, &info->emailCfg);
-		printConfig(&info->emailCfg);
+		//printConfig(&info->emailCfg);
 		
 		if (info->emailCfg.email_to == "" || info->emailCfg.server == "" || info->emailCfg.port == 0)
 		{
