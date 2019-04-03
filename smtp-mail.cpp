@@ -152,5 +152,10 @@ int sendEmailMsg(const EmailCfg *emailCfg, const char *msg)
   delete upload_ctx.payload;
   return (int)res;
 }
+
+char *errorString(int result)
+{
+	return strerror(result);
+}
 };
 

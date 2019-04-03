@@ -132,6 +132,7 @@ typedef struct
 } PLUGIN_INFO;
 
 extern int sendEmailMsg(const EmailCfg *emailCfg, const char *msg);
+extern char *errorString(int result);
 
 /**
  * Return the information about this plugin
@@ -180,39 +181,39 @@ void parseConfig(ConfigCategory *config, EmailCfg *emailCfg)
 	{
 		emailCfg->email_from = config->getValue("email_from");
 	}
-	else if (config->itemExists("email_from_name"))
+	if (config->itemExists("email_from_name"))
 	{
-		emailCfg->email_from_name = config->getValue("emails_from_name");
+		emailCfg->email_from_name = config->getValue("email_from_name");
 	}
-	else if (config->itemExists("email_to"))
+	if (config->itemExists("email_to"))
 	{
 		emailCfg->email_to = config->getValue("email_to");
 	}
-	else if (config->itemExists("email_to_name"))
+	if (config->itemExists("email_to_name"))
 	{
 		emailCfg->email_to_name = config->getValue("email_to_name");
 	}
-	else if (config->itemExists("server"))
+	if (config->itemExists("server"))
 	{
 		emailCfg->server = config->getValue("server");
 	}
-	else if (config->itemExists("port"))
+	if (config->itemExists("port"))
 	{
 		emailCfg->port = (unsigned int)atoi(config->getValue("port").c_str());
 	}
-	else if (config->itemExists("subject"))
+	if (config->itemExists("subject"))
 	{
 		emailCfg->subject = config->getValue("subject");
 	}
-	else if (config->itemExists("use_ssl_tls"))
+	if (config->itemExists("use_ssl_tls"))
 	{
 		emailCfg->use_ssl_tls = config->getValue("use_ssl_tls").compare("true") ? false : true;
 	}
-	else if (config->itemExists("username"))
+	if (config->itemExists("username"))
 	{
 		emailCfg->username = config->getValue("username");
 	}
-	else if (config->itemExists("password"))
+	if (config->itemExists("password"))
 	{
 		emailCfg->password = config->getValue("password");
 	}
@@ -229,9 +230,6 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config)
 {
 	PLUGIN_INFO *info = new PLUGIN_INFO;
 
-	Logger::getLogger()->setMinLevel("debug");
-	Logger::getLogger()->debug("email plugin_init has been called");
-	
 	// Handle plugin configuration
 	if (config)
 	{
@@ -279,7 +277,7 @@ bool plugin_deliver(PLUGIN_HANDLE handle,
 	
 	int rv = sendEmailMsg(&info->emailCfg, message.c_str());
 	if (rv)
-		Logger::getLogger()->error("Email notification failed: sendEmailMsg() returned %d", rv);
+		Logger::getLogger()->error("Email notification failed: sendEmailMsg() returned %d, %s", rv, errorString(rv));
 	else
 		Logger::getLogger()->error("sendEmailMsg() returned SUCCESS");
 }
