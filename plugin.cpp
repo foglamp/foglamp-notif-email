@@ -20,19 +20,6 @@
 #define TO_STRING_(...) #__VA_ARGS__
 #define QUOTE(...) TO_STRING(__VA_ARGS__)
 
-#define EMAIL_CFG TO_STRING({ \
-	"email_from" : "dianomic.alerts@gmail.com", \
-	"email_from_name" : "Notification alert", \
-	"email_to" : "alert.subscriber@dianomic.com", \
-	"email_to_name" : "Notification alert subscriber", \
-	"server" : "smtp.gmail.com", \
-	"port" : 587, \
-	"subject" : "Foglamp alert notification", \
-	"use_ssl_tls" : true, \
-	"username" : "dianomic.alerts@gmail.com", \
-	"password" : "pass" \
-})
-
 #define PLUGIN_NAME "email"
 
 const char * def_cfg = QUOTE({
@@ -41,17 +28,82 @@ const char * def_cfg = QUOTE({
 		"type" : "string",
 		"default" : PLUGIN_NAME,
 		"readonly" : "true" },
+	"email_to" : {
+		"description" : "The address to send the alert to",
+		"type" : "string",
+		"default" : "alert.subscriber@dianomic.com",
+		"order" : "1",
+		"displayName" : "To address"
+		},
+	"email_to_name" : {
+		"description" : "The name to send the alert to",
+		"type" : "string",
+		"default" : "Notification alert subscriber",
+		"order" : "2",
+		"displayName" : "To "
+		},
+	"subject" : {
+		"description" : "The email subject",
+		"type" : "string",
+		"displayName" : "Subject",
+		"order" : "3",
+		"default" : "Foglamp alert notification"
+		},
+	"email_from" : {
+		"description" : "The address the email will come from",
+		"type" : "string",
+		"displayName" : "From address",
+		"default" : "dianomic.alerts@gmail.com",
+		"order" : "4"
+		},
+	"email_from_name" : {
+		"description" : "The name used to send the alert email",
+		"type" : "string",
+		"default" : "Notification alert", 
+		"displayName" : "From name",
+		"order" : "5"
+		},
+	"server" : {
+		"description" : "The SMTP server name/address",
+		"type" : "string",
+		"displayName" : "SMTP Server",
+		"order" : "6",
+		"default" : "smtp.gmail.com"
+		},
+	"port" : {
+		"description" : "The SMTP server port",
+		"type" : "integer",
+		"displayName" : "SMTP Port",
+		"order" : "7",
+		"default" : "587"
+		},
+	"use_ssl_tls" : {
+		"description" : "Use SSL/TLS for email transfer",
+		"type" : "boolean",
+		"displayName" : "SSL/TLS",
+		"order" : "8",
+		"default" : "true"
+		},
+	"username" : {
+		"description" : "Email account name",
+		"type" : "string",
+		"displayName" : "Username",
+		"order" : "9",
+		"default" : "dianomic.alerts@gmail.com"
+		},
+	"password" : {
+		"description" : "Email account password",
+		"type" : "string",
+		"displayName" : "Password",
+		"order" : "10",
+		"default" : "pass"
+		},
 	"enable": {
 		"description": "A switch that can be used to enable or disable execution of the email notification plugin.",
 		"type": "boolean",
 		"displayName" : "Enabled",
 		"default": "false", 
-		"order" : "2" },
-	"emailCfg" : {"description" : "Email server & account config",
-		"type" : "JSON",
-		"default" : EMAIL_CFG,
-		"order" : "1",
-		"displayName" : "Email server & account config"} 
+		"order" : "11" }
 	});
 
 using namespace std;
@@ -122,54 +174,47 @@ void printConfig(EmailCfg *emailCfg)
 /**
  * Fill EmailCfg structure from JSON document representing email server/account config
  */
-void parseConfig(Document *document, EmailCfg *emailCfg)
+void parseConfig(ConfigCategory *config, EmailCfg *emailCfg)
 {
-	for (Value::ConstMemberIterator itr = document->MemberBegin(); itr != document->MemberEnd(); ++itr)
+	if (config->itemExists("email_from"))
 	{
-		if (strcmp(itr->name.GetString(), "email_from") == 0 && itr->value.IsString())
-		{
-			emailCfg->email_from = itr->value.GetString();
-		}
-		else if (strcmp(itr->name.GetString(), "email_from_name") == 0 && itr->value.IsString())
-		{
-			emailCfg->email_from_name= itr->value.GetString();
-		}
-		else if (strcmp(itr->name.GetString(), "email_to") == 0 && itr->value.IsString())
-		{
-			emailCfg->email_to = itr->value.GetString();
-		}
-		else if (strcmp(itr->name.GetString(), "email_to_name") == 0 && itr->value.IsString())
-		{
-			emailCfg->email_to_name = itr->value.GetString();
-		}
-		else if (strcmp(itr->name.GetString(), "server") == 0 && itr->value.IsString())
-		{
-			emailCfg->server = itr->value.GetString();
-		}
-		else if (strcmp(itr->name.GetString(), "port") == 0 && itr->value.IsNumber())
-		{
-			emailCfg->port = (unsigned int) itr->value.GetInt();
-		}
-		else if (strcmp(itr->name.GetString(), "subject") == 0 && itr->value.IsString())
-		{
-			emailCfg->subject = itr->value.GetString();
-		}
-		else if (strcmp(itr->name.GetString(), "use_ssl_tls") == 0 && itr->value.IsBool())
-		{
-			emailCfg->use_ssl_tls = itr->value.IsTrue();
-		}
-		else if (strcmp(itr->name.GetString(), "username") == 0 && itr->value.IsString())
-		{
-			emailCfg->username = itr->value.GetString();
-		}
-		else if (strcmp(itr->name.GetString(), "password") == 0 && itr->value.IsString())
-		{
-			emailCfg->password = itr->value.GetString();
-		}
-		else
-		{
-			Logger::getLogger()->error("Unable to parse/handle value for config field '%s', skipping...", itr->name.GetString());
-		}
+		emailCfg->email_from = config->getValue("emails_from");
+	}
+	else if (config->itemExists("email_from_name"))
+	{
+		emailCfg->email_from_name = config->getValue("emails_from_name");
+	}
+	else if (config->itemExists("email_to"))
+	{
+		emailCfg->email_to = config->getValue("email_to");
+	}
+	else if (config->itemExists("email_to_name"))
+	{
+		emailCfg->email_to_name = config->getValue("email_to_name");
+	}
+	else if (config->itemExists("server"))
+	{
+		emailCfg->server = config->getValue("server");
+	}
+	else if (config->itemExists("port"))
+	{
+		emailCfg->port = (unsigned int)atoi(config->getValue("port").c_str());
+	}
+	else if (config->itemExists("subject"))
+	{
+		emailCfg->subject = config->getValue("subject");
+	}
+	else if (config->itemExists("use_ssl_tls"))
+	{
+		emailCfg->use_ssl_tls = config->getValue("use_ssl_tls").compare("true") ? false : true;
+	}
+	else if (config->itemExists("username"))
+	{
+		emailCfg->username = config->getValue("username");
+	}
+	else if (config->itemExists("password"))
+	{
+		emailCfg->password = config->getValue("password");
 	}
 }
 
@@ -183,21 +228,18 @@ void parseConfig(Document *document, EmailCfg *emailCfg)
 PLUGIN_HANDLE plugin_init(ConfigCategory* config)
 {
 	PLUGIN_INFO *info = new PLUGIN_INFO;
+
+	Logger::getLogger()->setMinLevel("debug");
+	Logger::getLogger()->debug("email plugin_init has been called");
 	
 	// Handle plugin configuration
 	if (config)
 	{
-		Document	document;
-		if (document.Parse(config->getValue("emailCfg").c_str()).HasParseError())
-		{
-			Logger::getLogger()->error("Unable to parse email plugin config: '%s'", config->getValue("emailCfg").c_str());
-			return NULL;
-		}
 		Logger::getLogger()->info("Email plugin config=%s", config->toJSON().c_str());
 
 		resetConfig(&info->emailCfg);
-		parseConfig(&document, &info->emailCfg);
-		//printConfig(&info->emailCfg);
+		parseConfig(config, &info->emailCfg);
+		printConfig(&info->emailCfg);
 		
 		if (info->emailCfg.email_to == "" || info->emailCfg.server == "" || info->emailCfg.port == 0)
 		{
@@ -208,7 +250,7 @@ PLUGIN_HANDLE plugin_init(ConfigCategory* config)
 	}
 	else
 	{
-		Logger::getLogger()->info("No config provided for email plugin, exiting...");
+		Logger::getLogger()->fatal("No config provided for email plugin, exiting...");
 		delete info;
 		info = NULL;
 	}
@@ -237,9 +279,9 @@ bool plugin_deliver(PLUGIN_HANDLE handle,
 	
 	int rv = sendEmailMsg(&info->emailCfg, message.c_str());
 	if (rv)
-		Logger::getLogger()->info("sendEmailMsg() returned %d", rv);
+		Logger::getLogger()->error("Email notification failed: sendEmailMsg() returned %d", rv);
 	else
-		Logger::getLogger()->info("sendEmailMsg() returned SUCCESS");
+		Logger::getLogger()->error("sendEmailMsg() returned SUCCESS");
 }
 
 /**
@@ -249,16 +291,10 @@ void plugin_reconfigure(PLUGIN_HANDLE *handle, string& newConfig)
 {
 	Logger::getLogger()->info("Email notification plugin: plugin_reconfigure()");
 	PLUGIN_INFO *info = (PLUGIN_INFO *) handle;
-	
-	Document document;
-	if (document.Parse(newConfig.c_str()).HasParseError())
-		{
-			Logger::getLogger()->error("Unable to parse new email notification plugin config: '%s'", newConfig.c_str());
-			return;
-		}
+	ConfigCategory  config("new", newConfig); 
 	Logger::getLogger()->info("Email plugin reconfig=%s", newConfig.c_str());
 
-	parseConfig(&document, &info->emailCfg);
+	parseConfig(&config, &info->emailCfg);
 	
 	if (info->emailCfg.email_to == "" || info->emailCfg.server == "" || info->emailCfg.port == 0)
 	{
