@@ -178,7 +178,7 @@ void parseConfig(ConfigCategory *config, EmailCfg *emailCfg)
 {
 	if (config->itemExists("email_from"))
 	{
-		emailCfg->email_from = config->getValue("emails_from");
+		emailCfg->email_from = config->getValue("email_from");
 	}
 	else if (config->itemExists("email_from_name"))
 	{
