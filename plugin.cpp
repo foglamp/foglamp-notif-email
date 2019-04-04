@@ -279,7 +279,7 @@ bool plugin_deliver(PLUGIN_HANDLE handle,
 	if (rv)
 		Logger::getLogger()->error("Email notification failed: sendEmailMsg() returned %d, %s", rv, errorString(rv));
 	else
-		Logger::getLogger()->error("sendEmailMsg() returned SUCCESS");
+		Logger::getLogger()->info("sendEmailMsg() returned SUCCESS");
 }
 
 /**
