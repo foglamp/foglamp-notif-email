@@ -153,7 +153,7 @@ int sendEmailMsg(const EmailCfg *emailCfg, const char *msg)
   return (int)res;
 }
 
-char *errorString(int result)
+const char *errorString(int result)
 {
 	return curl_easy_strerror((CURLcode)result);
 }
