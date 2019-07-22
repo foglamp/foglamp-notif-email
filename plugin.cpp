@@ -273,9 +273,15 @@ bool plugin_deliver(PLUGIN_HANDLE handle,
 	
 	int rv = sendEmailMsg(&info->emailCfg, message.c_str());
 	if (rv)
+	{
 		Logger::getLogger()->error("Email notification failed: sendEmailMsg() returned %d, %s", rv, errorString(rv));
+		return true;
+	}
 	else
+	{
 		Logger::getLogger()->info("sendEmailMsg() returned SUCCESS");
+		return false;
+	}
 }
 
 /**
