@@ -1,7 +1,7 @@
 #ifndef _EMAIL_CONFIG_H
 #define _EMAIL_CONFIG_H
 /*
- * FogLAMP email notification plugin
+ * Fledge email notification plugin
  *
  * Copyright (c) 2018 OSIsoft, LLC
  *

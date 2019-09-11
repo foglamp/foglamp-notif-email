@@ -1,5 +1,5 @@
 /*
- * FogLAMP "email" notification plugin.
+ * Fledge "email" notification plugin.
  *
  * Copyright (c) 2018 Dianomic Systems
  *
@@ -43,7 +43,7 @@ const char * def_cfg = QUOTE({
 		"type" : "string",
 		"displayName" : "Subject",
 		"order" : "3",
-		"default" : "Foglamp alert notification"
+		"default" : "Fledge alert notification"
 		},
 	"email_from" : {
 		"description" : "The address the email will come from",
